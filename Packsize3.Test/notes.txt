@@ -1,0 +1,70 @@
+﻿
+
+Outline of methods required:
+1. Create a method for validating input strings
+2. Create a method for parsing the strings. We can use the Interpreter pattern.
+3. Create a method for resolving dependencies. 
+4. Create a class for our data structure, which represents a directed acyclic graph.
+We can use a Depth-First Search (DFS) algorithm to check for cycles in the graph.
+Each cycle is a strongly connected component because, by definition, a strongly connected component is a subgraph in which 
+every vertex is reachable from (but not necessarily adjacent to) every other vertex in the component.
+We will use Tarjan's strongly connected components algorithm, which has O(|E| + |V|) complexity, where E are edges and V are vertices.
+(Note: We must first check that a node doesn't reference itself because that won't get detected by that algorithm.)
+
+2.1. Create a method that  foreach item in the array, it:
+	2.1.1. Splits the item into a package and its dependency list (which can be empty) by a given delimiter (in this case a ":" character);
+	2.1.2. If the item hasn't been added to the Courses data structure, add it, keyed by name (as a string);
+	2.1.3. If the item's dependency list is not null, 
+		2.1.3.1. if it contains a delimiter (in this case a "," character), then there is more than one dependent course; 
+		2.1.3.2. if there is more than one dependent course, then split the courses into a list.
+		2.1.3.3. foreach dependent course:
+			2.1.3.3.1. Check if the course has been added to Courses. (we assume it must be an exact text string match)
+			2.1.3.3.2. 
+
+We will want to use the recursive DFS. We must be careful with recursion when there are cycles. 
+To use QuickGraph, each vertex must have a unique integer ID. We can assign and track these via Courses.
+It can use a private  key value dictionary to store the integer values with the string key names. 
+This is fine performance-wise because a dictionary lookup is O(1).
+
+Class notes:
+	The Course class should contain a runtime (late-bound) lookup to resolve its dependencies.
+	We may want to use the Repository pattern.
+
+We can use an Interpreter to parse the courseNames into an expression tree.
+Then we can use a Visitor to interpret the results and add the elements to Courses (which assigns them integer IDs).
+Then, for each Course where 
+Then, for a given Course, we must get a tuple with its ID and an array with the IDs of its dependencies.
+ 
+
+We can use a Composite to handle the course data structure.
+
+How do we want to deal with the Courses when a cycle is detected?
+
+
+To use the cycle detection features of QuickGraph, each Course needs to be given an integer ID. 
+(This is usually best done in the database.)
+What we can do instead is create a hash of the string of the name. This will allow us to provide integer values 
+
+DONE: I must create a function that takes a string of a course name and returns the integer ID.
+Once each course has been given an ID, I must create a vertex in QuickGraph and create an edge between each vertex and its dependency vertices.
+(So, I also need a function that for a given vertex (either by course name or ID), it returns an array of dependent course IDs.)
+
+--
+TO DO:
+	I need a function that gets an array of dependent IDs from a given ID or courseName.
+	DONE: I need a method that saves all of the dependent courses of a given course into the Courses. (I can use method injection.)
+	// If I create a method on Course that accepts a Courses parameter, then when I call Courses.Add(course), in the body of Add(..), I can 
+	pass this into the method on the course. This is good if we use an interface... but Courses is a singleton, so is this needed? 
+	I could extract an ICourseRepository interface and include an AddCourse method.
+
+	DONE: When we add a new course, we also need to add its dependent courses if they don't already exist.
+	If I make each Course a TVertex, then...
+
+TO DO (later):
+
+The dictionaries of Courses need write locks to make them thread safe.
+
+
+
+
+
